@@ -30,7 +30,10 @@ def analyze_url(url):
         return False
 
     soup = BeautifulSoup(response.text, "html.parser")
-    data["ip"] = soup.find_all("th", "tableLabel", text="IP Address:")[0].find_next_sibling("td").text.strip()
+    ip_address_table_header = soup.find_all("th", "tableLabel", text="IP Address:")
+    if not ip_address_table_header:
+        return False
+    data["ip"] = ip_address_table_header[0].find_next_sibling("td").text.strip()
     data["site"] = soup.find_all("th", "tableLabel", text="Site:")[0].find_next_sibling("td").text.strip()
 
     headers = OrderedDict()
