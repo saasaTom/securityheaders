@@ -32,12 +32,20 @@ def cli(url, to_json):
 
     # analyze security headers of given URL
     data = analyze_url(url)
-
+    
+    if not data:
+        if to_json:
+            error = {"message": "Could not scan security headers for site. No response", "Status": "Error"}
+            click.echo(json.dumps(error))
+        else:
+            click.echo("⚠️ERROR: Could not scan security headers for site. No response⚠️", bold=True)
+        return            
+    
     if to_json:
         click.echo(json.dumps(data, indent=4, sort_keys=True))
     else:
         click.echo("➤ Site: {0}".format(click.style(data["site"], bold=True)))
-        click.echo("➤ IP Address: {0}".format(click.style(data["ip"], bold=True)))
+        click.echo("➤ IP Address: {0}".format(click.style(data["ip"], bold=True, fg="red")))
         click.echo(click.style("➤ Security Headers:", bold=True))
 
         table = PrettyTable(["Header", "Value", "Rating", "Description"])
