@@ -24,7 +24,10 @@ def analyze_url(url):
     """
     data = {}
     api_url = __SECURITY_HEADERS_URL__.format(url)
-    response = requests.get(api_url)
+    try:
+        response = requests.get(api_url)
+    catch ConnectionError as ce
+        return False
 
     soup = BeautifulSoup(response.text, "html.parser")
     data["ip"] = soup.find_all("th", "tableLabel", text="IP Address:")[0].find_next_sibling("td").text.strip()
