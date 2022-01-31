@@ -5,7 +5,7 @@
     from a given URL.
 """
 
-
+import sys
 import click
 import json
 import textwrap
@@ -34,12 +34,14 @@ def cli(url, to_json):
     data = analyze_url(url)
     
     if not data:
+        error_message = "Could not scan security headers for site. No response"
         if to_json:
-            error = {"message": "Could not scan security headers for site. No response", "Status": "Error"}
+            error = {"message": error_message, "Status": "Error"}
             click.echo(json.dumps(error))
         else:
-            click.echo("⚠️ERROR: Could not scan security headers for site. No response⚠️", bold=True)
-        return            
+            click.echo(f"⚠️ERROR: {error_message}⚠️", bold=True)
+        print(error_message, file=sys.stderr)
+        sys.exit(-1)            
     
     if to_json:
         click.echo(json.dumps(data, indent=4, sort_keys=True))
